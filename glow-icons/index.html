@@ -3,21 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Neon Glow Icon Creator</title>
+  <title>Glow Lab // Neon Emoji Creator</title>
   <style>
     :root {
-      --bg-1: #090b16;
-      --bg-2: #131a2e;
-      --panel: rgba(15, 18, 32, 0.88);
+      --bg-1: #0a0d18;
+      --bg-2: #141d33;
+      --panel: rgba(17, 21, 35, 0.86);
       --panel-border: rgba(255,255,255,0.12);
-      --text: #edf4ff;
-      --muted: #a6b0d2;
+      --text: #edf5ff;
+      --muted: #aab7d7;
       --accent: #7c8dff;
-      --icon-size: 140px;
-      --glow-strength: 26px;
       --glow-color: #7c8dff;
-      --glow-color-2: #5ce1ff;
+      --glow-color-2: #60e1ff;
+      --glow-strength: 26px;
+      --icon-size: 140px;
       --rotation: 0deg;
+      --hero-glow: rgba(124, 141, 255, 0.36);
     }
 
     * { box-sizing: border-box; }
@@ -28,185 +29,781 @@
       font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       color: var(--text);
       background:
-        radial-gradient(circle at top, rgba(126, 96, 255, 0.25), transparent 30%),
-        radial-gradient(circle at bottom right, rgba(18, 211, 255, 0.35), transparent 35%),
+        radial-gradient(circle at top, rgba(136, 110, 255, 0.28), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(56, 234, 255, 0.22), transparent 32%),
         linear-gradient(135deg, var(--bg-1), var(--bg-2));
       overflow-x: hidden;
     }
 
-    body { display: grid; place-items: center; min-height: 100vh; padding: 28px; }
-
-    .app {
-      width: min(1100px, 100%);
+    body {
+      min-height: 100vh;
       display: grid;
-      grid-template-columns: minmax(280px, 360px) minmax(320px, 1fr);
-      gap: 22px;
-      background: rgba(9, 12, 20, 0.52);
-      border: 1px solid var(--panel-border);
-      border-radius: 28px;
-      box-shadow: 0 18px 80px rgba(15, 12, 35, 0.6), inset 0 1px 0 rgba(255,255,255,0.08);
-      backdrop-filter: blur(14px);
-      padding: 24px;
+      place-items: center;
+      padding: 26px;
     }
 
-    .panel { background: var(--panel); border: 1px solid var(--panel-border); border-radius: 22px; padding: 18px 18px 14px; }
-    .controls { display: grid; gap: 16px; }
-    .label { display: block; margin-bottom: 8px; color: var(--muted); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
+    .app {
+      position: relative;
+      width: min(1160px, 100%);
+      display: grid;
+      grid-template-columns: minmax(300px, 380px) minmax(340px, 1fr);
+      gap: 24px;
+      padding: 22px;
+      border-radius: 30px;
+      background: rgba(7, 10, 19, 0.52);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 24px 80px rgba(2, 5, 16, 0.72), inset 0 1px 0 rgba(255,255,255,0.08);
+      backdrop-filter: blur(14px);
+      overflow: hidden;
+    }
+
+    .app::before, .app::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(72px);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .app::before {
+      width: 240px;
+      height: 240px;
+      top: -60px;
+      left: -20px;
+      background: rgba(130, 122, 255, 0.18);
+    }
+
+    .app::after {
+      width: 220px;
+      height: 220px;
+      bottom: -60px;
+      right: -20px;
+      background: rgba(80, 214, 255, 0.16);
+    }
+
+    .panel {
+      position: relative;
+      z-index: 1;
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 24px;
+      padding: 18px;
+    }
+
+    .controls {
+      display: grid;
+      gap: 16px;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .brand {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      border-radius: 999px;
+      padding: 7px 10px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.036);
+      color: #dfeaff;
+    }
+
+    .pill::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #7bf6ff, #7c8dff);
+      box-shadow: 0 0 12px rgba(123, 246, 255, 0.9);
+    }
+
+    .label {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
 
     input[type="text"], select {
       width: 100%;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.026);
       color: var(--text);
       border-radius: 12px;
       padding: 12px 14px;
       font-size: 16px;
       outline: none;
+      transition: border-color .18s ease, box-shadow .18s ease;
     }
 
-    input[type="text"]:focus, select:focus { border-color: rgba(124,141,255,.8); box-shadow: 0 0 0 4px rgba(124,141,255,.18); }
-    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    input[type="text"]:focus, select:focus {
+      border-color: rgba(124,141,255,0.8);
+      box-shadow: 0 0 0 4px rgba(124,141,255,0.18);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
     .range-group { display: grid; gap: 8px; }
     .range-inline { display: flex; align-items: center; gap: 10px; }
     input[type="range"] { width: 100%; accent-color: var(--accent); }
     .value { min-width: 42px; text-align: right; font-size: 12px; color: var(--muted); }
-    .color-row { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 12px; }
-    input[type="color"] { width: 54px; height: 44px; border: 0; border-radius: 10px; background: transparent; padding: 0; }
-    .swatches { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
-    .swatch { width: 24px; height: 24px; border-radius: 50%; border: 2px solid rgba(255,255,255,.22); cursor: pointer; }
-    .swatch:hover { transform: translateY(-1px) scale(1.05); border-color: rgba(255,255,255,.5); }
-    .swatch.selected { box-shadow: 0 0 0 2px rgba(255,255,255,.62); }
-    .actions { display: flex; flex-wrap: wrap; gap: 10px; padding-top: 4px; }
+
+    .color-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 12px;
+    }
+
+    input[type="color"] {
+      width: 54px;
+      height: 44px;
+      border: none;
+      border-radius: 12px;
+      background: transparent;
+      padding: 0;
+    }
+
+    .swatches {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .swatch {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.22);
+      cursor: pointer;
+      transition: transform .15s ease, border-color .15s ease;
+      background: #fff;
+    }
+
+    .swatch:hover {
+      transform: translateY(-1px) scale(1.05);
+      border-color: rgba(255,255,255,0.62);
+    }
+
+    .swatch.selected {
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.65);
+    }
+
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .preset {
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 10px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      transition: border-color .18s ease, transform .18s ease, background .18s ease;
+    }
+
+    .preset:hover {
+      border-color: rgba(124,141,255,0.8);
+      transform: translateY(-1px);
+      background: rgba(124,141,255,0.06);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 2px;
+    }
 
     button {
       appearance: none;
-      border: 0;
+      border: none;
       border-radius: 12px;
       padding: 11px 16px;
-      font-weight: 700;
-      letter-spacing: .02em;
-      color: #edf5ff;
+      font-weight: 800;
+      letter-spacing: 0.02em;
       cursor: pointer;
-      transition: transform .16s ease, box-shadow .16s ease;
-      background: linear-gradient(135deg, rgba(124,141,255,.98), rgba(92,225,255,.92));
-      box-shadow: 0 10px 24px rgba(92,130,255,.35), inset 0 1px 0 rgba(255,255,255,.25);
+      color: #edf6ff;
+      transition: transform .16s ease, box-shadow .16s ease, opacity .18s ease;
     }
 
     button:hover { transform: translateY(-1px); }
-    button.secondary { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.14); box-shadow: none; }
-    .preview-shell { display: grid; grid-template-rows: auto 1fr; gap: 16px; min-height: 540px; }
-    .preview-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 2px 0; }
-    .preview-title { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+    .primary {
+      background: linear-gradient(135deg, #7c8dff, #67dfff);
+      box-shadow: 0 12px 26px rgba(92, 130, 255, 0.38), inset 0 1px 0 rgba(255,255,255,0.2);
+    }
+
+    .secondary {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: none;
+    }
+
+    .preview-shell {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 16px;
+      min-height: 560px;
+    }
+
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 2px 0;
+    }
+
+    .preview-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .stats {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      color: #dfeafc;
+      font-size: 11px;
+      padding: 7px 9px;
+      font-weight: 700;
+    }
 
     .preview-stage {
       position: relative;
-      min-height: 480px;
-      border-radius: 28px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: radial-gradient(circle at 50% 20%, rgba(255,255,255,.14), transparent 22%), linear-gradient(135deg, rgba(255,255,255,.02), rgba(255,255,255,.08));
+      min-height: 500px;
       overflow: hidden;
+      border-radius: 28px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background:
+        radial-gradient(circle at 50% 20%, rgba(255,255,255,0.14), transparent 22%),
+        linear-gradient(135deg, rgba(255,255,255,0.024), rgba(255,255,255,0.08));
       display: grid;
       place-items: center;
+      isolation: isolate;
     }
 
-    .preview-stage::before, .preview-stage::after { content: ""; position: absolute; inset: 16% 18%; border-radius: 50%; filter: blur(70px); pointer-events: none; opacity: .8; }
-    .preview-stage::before { background: rgba(124,141,255,.28); transform: translate(-18%, -20%); }
-    .preview-stage::after { background: rgba(92,225,255,.26); transform: translate(26%, 16%); }
+    .preview-stage::before,
+    .preview-stage::after {
+      content: "";
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      filter: blur(70px);
+      opacity: 0.82;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .preview-stage::before {
+      top: 15%;
+      left: 18%;
+      background: rgba(124, 141, 255, 0.34);
+    }
+
+    .preview-stage::after {
+      right: 12%;
+      bottom: 14%;
+      background: rgba(92, 225, 255, 0.26);
+    }
+
+    .sparkles {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .spark {
+      position: absolute;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.8);
+      box-shadow: 0 0 12px var(--glow-color), 0 0 20px var(--glow-color-2);
+      opacity: 0.8;
+      animation: float 7s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) scale(.8); opacity: .3; }
+      40% { transform: translateY(-18px) scale(1.2); opacity: 1; }
+      70% { transform: translateY(12px) scale(.9); opacity: .7; }
+    }
 
     .neon-card {
       position: relative;
+      z-index: 1;
       display: grid;
       place-items: center;
       width: min(78%, 460px);
       aspect-ratio: 1;
       border-radius: 30px;
-      background: linear-gradient(135deg, rgba(13,18,31,.52), rgba(10,16,29,.8)), rgba(255,255,255,.02);
-      border: 1px solid rgba(255,255,255,.14);
-      box-shadow: inset 0 0 28px rgba(255,255,255,.04), 0 14px 38px rgba(2,6,20,.48);
+      background: linear-gradient(135deg, rgba(13,18,31,0.52), rgba(10,16,29,0.82));
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: inset 0 0 28px rgba(255,255,255,0.04), 0 18px 42px rgba(2,6,20,0.52);
       overflow: hidden;
     }
 
-    .neon-card::before { content: ""; position: absolute; inset: 10%; border-radius: 26px; border: 1px solid rgba(255,255,255,.08); background: linear-gradient(135deg, rgba(124,141,255,.12), rgba(92,225,255,.08), rgba(255,255,255,.02)); transform: scale(1.04); }
-    .glow-icon { position: relative; z-index: 1; display: inline-flex; align-items: center; justify-content: center; font-size: var(--icon-size); line-height: 1; transform: rotate(var(--rotation)); user-select: none; text-shadow: 0 0 var(--glow-strength) rgba(255,255,255,.92), 0 0 calc(var(--glow-strength) * 1.5) var(--glow-color), 0 0 calc(var(--glow-strength) * 2.1) var(--glow-color-2); transition: font-size .18s ease, transform .18s ease, filter .18s ease; }
+    .neon-card::before {
+      content: "";
+      position: absolute;
+      inset: 10%;
+      border-radius: 26px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(135deg, rgba(124,141,255,0.12), rgba(92,225,255,0.08), rgba(255,255,255,0.016));
+      transform: scale(1.06);
+    }
 
-    @media (max-width: 860px) { .app { grid-template-columns: 1fr; } .preview-shell { min-height: 440px; } }
+    .glow-icon {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--icon-size);
+      line-height: 1;
+      transform: rotate(var(--rotation));
+      user-select: none;
+      filter:
+        drop-shadow(0 0 calc(var(--glow-strength) * 0.6) rgba(255,255,255,0.8))
+        drop-shadow(0 0 calc(var(--glow-strength) * 1.2) var(--glow-color))
+        drop-shadow(0 0 calc(var(--glow-strength) * 1.8) var(--glow-color-2))
+        drop-shadow(0 0 calc(var(--glow-strength) * 2.2) rgba(255,255,255,0.48));
+      transition: font-size .18s ease, transform .18s ease;
+      text-shadow:
+        0 0 var(--glow-strength) rgba(255,255,255,0.92),
+        0 0 calc(var(--glow-strength) * 1.5) var(--glow-color),
+        0 0 calc(var(--glow-strength) * 2.1) var(--glow-color-2);
+    }
+
+    .glow-icon::selection { background: transparent; }
+
+    @media (max-width: 900px) {
+      .app { grid-template-columns: 1fr; }
+      .preview-shell { min-height: 440px; }
+    }
   </style>
 </head>
 <body>
   <main class="app">
     <section class="panel controls">
+      <div class="title-row">
+        <div class="brand">Glow Lab</div>
+        <div class="pill">Neon Mode</div>
+      </div>
+
       <div class="range-group">
-        <label class="label" for="emojiText">Icon / Emoji</label>
-        <input id="emojiText" type="text" value="⚡" maxlength="4" aria-label="Emoji text" />
+        <label class="label" for="emojiText">Emoji / mark</label>
+        <input id="emojiText" type="text" value="⚡" maxlength="4" aria-label="Emoji mark" />
       </div>
 
       <div class="grid-2">
-        <div class="range-group"><label class="label" for="sizeRange">Size</label><div class="range-inline"><input id="sizeRange" type="range" min="48" max="220" value="140" /><span class="value" id="sizeValue">140</span></div></div>
-        <div class="range-group"><label class="label" for="rotateRange">Rotate</label><div class="range-inline"><input id="rotateRange" type="range" min="-90" max="90" value="0" /><span class="value" id="rotateValue">0°</span></div></div>
+        <div class="range-group">
+          <label class="label" for="sizeRange">Size</label>
+          <div class="range-inline">
+            <input id="sizeRange" type="range" min="48" max="220" value="140" />
+            <span class="value" id="sizeValue">140</span>
+          </div>
+        </div>
+
+        <div class="range-group">
+          <label class="label" for="rotateRange">Tilt</label>
+          <div class="range-inline">
+            <input id="rotateRange" type="range" min="-90" max="90" value="0" />
+            <span class="value" id="rotateValue">0°</span>
+          </div>
+        </div>
       </div>
 
       <div class="grid-2">
-        <div class="range-group"><label class="label" for="glowRange">Glow</label><div class="range-inline"><input id="glowRange" type="range" min="8" max="80" value="26" /><span class="value" id="glowValue">26</span></div></div>
-        <div class="range-group"><label class="label" for="blurRange">Blur</label><div class="range-inline"><input id="blurRange" type="range" min="0" max="26" value="12" /><span class="value" id="blurValue">12</span></div></div>
+        <div class="range-group">
+          <label class="label" for="glowRange">Glow</label>
+          <div class="range-inline">
+            <input id="glowRange" type="range" min="8" max="80" value="26" />
+            <span class="value" id="glowValue">26</span>
+          </div>
+        </div>
+
+        <div class="range-group">
+          <label class="label" for="blurRange">Bloom</label>
+          <div class="range-inline">
+            <input id="blurRange" type="range" min="0" max="26" value="12" />
+            <span class="value" id="blurValue">12</span>
+          </div>
+        </div>
       </div>
 
-      <div class="range-group"><label class="label" for="saturationRange">Saturation</label><div class="range-inline"><input id="saturationRange" type="range" min="40" max="140" value="95" /><span class="value" id="saturationValue">95%</span></div></div>
+      <div class="range-group">
+        <label class="label" for="saturationRange">Color kick</label>
+        <div class="range-inline">
+          <input id="saturationRange" type="range" min="40" max="140" value="95" />
+          <span class="value" id="saturationValue">95%</span>
+        </div>
+      </div>
 
-      <div><label class="label">Glow color</label><div class="color-row"><input id="colorPicker" type="color" value="#7c8dff" /><div class="swatches" id="swatches"></div></div></div>
-      <div class="range-group"><label class="label" for="backgroundSelect">Background</label><select id="backgroundSelect"><option value="midnight">Midnight</option><option value="violet">Violet Pulse</option><option value="cyan">Cyan Drift</option><option value="sunset">Sunset Beam</option><option value="deep">Deep Space</option></select></div>
-      <div class="actions"><button id="randomBtn" type="button">Random</button><button id="copySvgBtn" type="button" class="secondary">Copy SVG</button><button id="downloadBtn" type="button" class="secondary">Download PNG</button></div>
+      <div>
+        <label class="label">Glow color</label>
+        <div class="color-row">
+          <input id="colorPicker" type="color" value="#7c8dff" />
+          <div class="swatches" id="swatches"></div>
+        </div>
+      </div>
+
+      <div>
+        <label class="label">Preset vibes</label>
+        <div class="preset-grid" id="presetGrid">
+          <button class="preset" data-preset="laser">Laser Pop</button>
+          <button class="preset" data-preset="party">Party Burst</button>
+          <button class="preset" data-preset="moon">Moonbeam</button>
+          <button class="preset" data-preset="sunset">Sunset Rush</button>
+        </div>
+      </div>
+
+      <div class="range-group">
+        <label class="label" for="backgroundSelect">Backdrop</label>
+        <select id="backgroundSelect">
+          <option value="midnight">Midnight</option>
+          <option value="violet">Violet Pulse</option>
+          <option value="cyan">Cyan Drift</option>
+          <option value="sunset">Sunset Beam</option>
+          <option value="deep">Deep Space</option>
+        </select>
+      </div>
+
+      <div class="actions">
+        <button id="randomBtn" class="primary" type="button">Surprise Me</button>
+        <button id="copySvgBtn" class="secondary" type="button">Copy SVG</button>
+        <button id="downloadBtn" class="secondary" type="button">Download PNG</button>
+      </div>
     </section>
 
     <section class="panel preview-shell">
-      <div class="preview-header"><div class="preview-title">Live neon preview</div></div>
-      <div class="preview-stage" id="previewStage"><div class="neon-card"><div class="glow-icon" id="glowIcon" aria-live="polite">⚡</div></div></div>
+      <div class="preview-header">
+        <div class="preview-title">Live glow preview</div>
+        <div class="stats">
+          <div class="tag" id="tagLabel">Spark</div>
+          <div class="tag" id="tagMood">Ready!</div>
+        </div>
+      </div>
+
+      <div class="preview-stage" id="previewStage">
+        <div class="sparkles" id="sparkles"></div>
+        <div class="neon-card">
+          <div class="glow-icon" id="glowIcon" aria-live="polite">⚡</div>
+        </div>
+      </div>
     </section>
   </main>
 
   <script>
     const $ = (id) => document.getElementById(id);
-    const emojiText = $("emojiText"), sizeRange = $("sizeRange"), rotateRange = $("rotateRange"), glowRange = $("glowRange"), blurRange = $("blurRange"), saturationRange = $("saturationRange"), colorPicker = $("colorPicker"), backgroundSelect = $("backgroundSelect"), glowIcon = $("glowIcon"), previewStage = $("previewStage");
-    const sizeValue = $("sizeValue"), rotateValue = $("rotateValue"), glowValue = $("glowValue"), blurValue = $("blurValue"), saturationValue = $("saturationValue"), swatchesEl = $("swatches");
-    const emojiPool = ["⚡","🔥","✨","💎","🌙","🚀","🎉","💜","⭐","💥","🌈","🦄","🎵","☄️","👾","✅","🌟","💫","🪐","🌌","🛸","🧠","⚙️","❄️","🧩","🎯","💣","🧪","♥️","🥇","🎧","🌊"];
-    const palette = ["#7c8dff","#5ce1ff","#ff6ad5","#ffb347","#7ef29a","#ff5f7d","#c27aff","#5df2c3","#ffd166","#8de0ff"];
+    const emojiText = $("emojiText");
+    const sizeRange = $("sizeRange");
+    const rotateRange = $("rotateRange");
+    const glowRange = $("glowRange");
+    const blurRange = $("blurRange");
+    const saturationRange = $("saturationRange");
+    const colorPicker = $("colorPicker");
+    const backgroundSelect = $("backgroundSelect");
+    const glowIcon = $("glowIcon");
+    const previewStage = $("previewStage");
+    const sparkles = $("sparkles");
+    const tagLabel = $("tagLabel");
+    const tagMood = $("tagMood");
+
+    const sizeValue = $("sizeValue");
+    const rotateValue = $("rotateValue");
+    const glowValue = $("glowValue");
+    const blurValue = $("blurValue");
+    const saturationValue = $("saturationValue");
+    const swatchesEl = $("swatches");
+
+    const emojiPool = ["⚡","🔥","✨","💎","🌙","🚀","🎉","💜","⭐","💥","🌈","🦄","🎵","☄️","👾","✅","🌟","💫","🪐","🌌","🛸","🧠","⚙️","❄️","🧩","🎯","💣","🧪","♥️","🥇","🎧","🌊","🚀","💪","🎊","🌠","🤖","🔥","⚙️"];
+    const palette = ["#7c8dff", "#5ce1ff", "#ff6ad5", "#ffb347", "#7ef29a", "#ff5f7d", "#c27aff", "#5df2c3", "#ffd166", "#8de0ff"];
+    const vibes = {
+      laser: { emoji: "⚡", color: "#7c8dff", glow: 30, size: 150, rotation: 12 },
+      party: { emoji: "🎉", color: "#ff6ad5", glow: 34, size: 152, rotation: -10 },
+      moon: { emoji: "🌙", color: "#8de0ff", glow: 24, size: 142, rotation: 0 },
+      sunset: { emoji: "🔥", color: "#ffb347", glow: 36, size: 150, rotation: 14 }
+    };
 
     const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
-    function hexToRgb(hex) { const n = parseInt(hex.replace("#", "").padEnd(6, "0"), 16); return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 }; }
-    function rgbToHex(r, g, b) { const h = n => n.toString(16).padStart(2, "0"); return "#" + h(r) + h(g) + h(b); }
-    function adjustSaturation(hex, percent) { const {r,g,b} = hexToRgb(hex), k = percent / 100; return rgbToHex(clamp(Math.round(r*k),0,255), clamp(Math.round(g*k),0,255), clamp(Math.round(b*k),0,255)); }
+
+    function hexToRgb(hex) {
+      const clean = hex.replace('#', '').padEnd(6, '0');
+      const num = parseInt(clean, 16);
+      return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
+    }
+
+    function rgbToHex(r, g, b) {
+      const hex = n => n.toString(16).padStart(2, '0');
+      return '#' + hex(r) + hex(g) + hex(b);
+    }
+
+    function adjustSaturation(hex, percent) {
+      const { r, g, b } = hexToRgb(hex);
+      const k = percent / 100;
+      return rgbToHex(
+        clamp(Math.round(r * k), 0, 255),
+        clamp(Math.round(g * k), 0, 255),
+        clamp(Math.round(b * k), 0, 255)
+      );
+    }
 
     function setBackground(name) {
-      const themes = { midnight:["#090b16","#131a2e"], violet:["#120c22","#1b0f2e"], cyan:["#071520","#0d233a"], sunset:["#1b0c16","#2c2035"], deep:["#050b14","#101923"] };
-      const [a,b] = themes[name] || themes.midnight;
+      const themes = {
+        midnight: ["#090b16", "#131a2e"],
+        violet: ["#120c22", "#1b0f2e"],
+        cyan: ["#071520", "#0d233a"],
+        sunset: ["#1b0c16", "#2c2035"],
+        deep: ["#050b14", "#101923"]
+      };
+      const [a, b] = themes[name] || themes.midnight;
       document.documentElement.style.setProperty("--bg-1", a);
       document.documentElement.style.setProperty("--bg-2", b);
     }
 
+    function addSparkles() {
+      sparkles.innerHTML = "";
+      const total = 18;
+      for (let i = 0; i < total; i++) {
+        const s = document.createElement("span");
+        s.className = "spark";
+        s.style.left = (Math.random() * 100) + "%";
+        s.style.top = (Math.random() * 100) + "%";
+        s.style.animationDelay = (Math.random() * 3) + "s";
+        s.style.animationDuration = (4 + Math.random() * 5) + "s";
+        s.style.width = (4 + Math.random() * 6) + "px";
+        s.style.height = s.style.width;
+        s.style.opacity = (0.3 + Math.random() * 0.7).toFixed(2);
+        sparkles.appendChild(s);
+      }
+    }
+
     function buildSwatches() {
       swatchesEl.innerHTML = "";
-      palette.forEach(hex => { const dot = document.createElement("button"); dot.type="button"; dot.className="swatch"; dot.style.background=hex; dot.setAttribute("aria-label", `Select glow color ${hex}`); if (hex === colorPicker.value.toLowerCase()) dot.classList.add("selected"); dot.onclick=()=>{colorPicker.value=hex; syncControls();}; swatchesEl.appendChild(dot); });
+      palette.forEach((hex) => {
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = "swatch";
+        dot.style.background = hex;
+        dot.setAttribute("aria-label", "Select glow color " + hex);
+        if (hex.toLowerCase() === colorPicker.value.toLowerCase()) dot.classList.add("selected");
+        dot.addEventListener("click", () => {
+          colorPicker.value = hex;
+          syncControls();
+        });
+        swatchesEl.appendChild(dot);
+      });
     }
 
     function syncControls() {
-      const size=+sizeRange.value, rotation=+rotateRange.value, glow=+glowRange.value, blur=+blurRange.value, saturation=+saturationRange.value, chosen=colorPicker.value;
-      const color=adjustSaturation(chosen,saturation), color2=adjustSaturation(chosen,clamp(saturation+18,40,140));
-      document.documentElement.style.setProperty("--icon-size", size+"px"); document.documentElement.style.setProperty("--rotation", rotation+"deg"); document.documentElement.style.setProperty("--glow-strength", glow+"px"); document.documentElement.style.setProperty("--glow-color", color); document.documentElement.style.setProperty("--glow-color-2", color2);
-      glowIcon.style.filter=`drop-shadow(0 0 ${glow*.6}px rgba(255,255,255,.8)) drop-shadow(0 0 ${glow*1.1}px ${color}) drop-shadow(0 0 ${glow*1.7}px ${color2}) drop-shadow(0 0 ${glow*2.2}px rgba(255,255,255,.5))`;
-      glowIcon.style.textShadow=`0 0 ${glow}px rgba(255,255,255,.92), 0 0 ${glow*1.5}px ${color}, 0 0 ${glow*2.1}px ${color2}`;
-      sizeValue.textContent=size; rotateValue.textContent=rotation+"°"; glowValue.textContent=glow; blurValue.textContent=blur; saturationValue.textContent=saturation+"%"; previewStage.style.filter=`blur(${blur*.15}px)`; buildSwatches();
+      const size = Number(sizeRange.value);
+      const rotation = Number(rotateRange.value);
+      const glow = Number(glowRange.value);
+      const blur = Number(blurRange.value);
+      const saturation = Number(saturationRange.value);
+      const chosen = colorPicker.value;
+      const color = adjustSaturation(chosen, saturation);
+      const color2 = adjustSaturation(chosen, clamp(saturation + 18, 40, 140));
+
+      document.documentElement.style.setProperty("--icon-size", size + "px");
+      document.documentElement.style.setProperty("--rotation", rotation + "deg");
+      document.documentElement.style.setProperty("--glow-strength", glow + "px");
+      document.documentElement.style.setProperty("--glow-color", color);
+      document.documentElement.style.setProperty("--glow-color-2", color2);
+      document.documentElement.style.setProperty("--hero-glow", color);
+
+      glowIcon.style.filter = `drop-shadow(0 0 ${glow * 0.6}px rgba(255,255,255,.8)) drop-shadow(0 0 ${glow * 1.1}px ${color}) drop-shadow(0 0 ${glow * 1.7}px ${color2}) drop-shadow(0 0 ${glow * 2.2}px rgba(255,255,255,.5))`;
+      glowIcon.style.textShadow = `0 0 ${glow}px rgba(255,255,255,.94), 0 0 ${glow * 1.5}px ${color}, 0 0 ${glow * 2.1}px ${color2}`;
+      glowIcon.style.transform = `rotate(${rotation}deg)`;
+
+      sizeValue.textContent = size;
+      rotateValue.textContent = rotation + "°";
+      glowValue.textContent = glow;
+      blurValue.textContent = blur;
+      saturationValue.textContent = saturation + "%";
+      previewStage.style.filter = `blur(${blur * 0.15}px)`;
+
+      const icon = (emojiText.value.trim() || "⚡").slice(0, 4);
+      tagLabel.textContent = icon === "⚡" ? "Spark" : icon === "🔥" ? "Hot" : icon === "💎" ? "Gem" : icon === "🌙" ? "Moon" : icon === "🚀" ? "Launch" : icon === "🎉" ? "Party" : icon === "✨" ? "Magic" : "Glow";
+      tagMood.textContent = glow > 38 ? "Bright!" : glow > 24 ? "Ready!" : "Soft";
+
+      buildSwatches();
     }
 
-    function updateIconText() { glowIcon.textContent = emojiText.value.trim() || "⚡"; }
-    function makeSvgMarkup() { const text=(emojiText.value.trim()||"⚡").slice(0,4), size=+sizeRange.value, glow=+glowRange.value, rotate=+rotateRange.value, color=adjustSaturation(colorPicker.value,+saturationRange.value); return `<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320"><defs><linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#0a0f1d"/><stop offset="100%" stop-color="#111b2b"/></linearGradient><filter id="glow"><feGaussianBlur stdDeviation="${clamp(glow/12,1,10)}" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><rect width="320" height="320" rx="36" fill="url(#bg)"/><text x="160" y="${160+size*.25}" text-anchor="middle" font-size="${size}" font-family="Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif" fill="${color}" filter="url(#glow)" transform="rotate(${rotate} 160 160)">${text}</text></svg>`; }
-    async function copySvg() { const svg=makeSvgMarkup(); try { await navigator.clipboard.writeText(svg); alert("SVG copied to clipboard."); } catch { prompt("Copy this SVG manually:",svg); } }
-    function downloadPng() { const canvas=document.createElement("canvas"); canvas.width=canvas.height=1024; const ctx=canvas.getContext("2d"), glow=+glowRange.value, color=adjustSaturation(colorPicker.value,+saturationRange.value), text=(emojiText.value.trim()||"⚡").slice(0,4); const bg=ctx.createRadialGradient(460,300,50,512,512,900); bg.addColorStop(0,"rgba(255,255,255,.1)"); bg.addColorStop(.35,"#0e1221"); bg.addColorStop(1,"#060a12"); ctx.fillStyle=bg; ctx.fillRect(0,0,1024,1024); ctx.save(); ctx.translate(512,512); ctx.rotate((+rotateRange.value*Math.PI)/180); ctx.font=`${+sizeRange.value*4}px Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif`; ctx.textAlign="center"; ctx.textBaseline="middle"; for(let i=0;i<18;i++){ctx.save();ctx.shadowBlur=glow*(1.2+i*.05);ctx.shadowColor=color;ctx.fillStyle=i%2?color:"#fff";ctx.fillText(text,0,0);ctx.restore();} ctx.restore(); const a=document.createElement("a"); a.download="neon-glow-icon.png"; a.href=canvas.toDataURL("image/png"); a.click(); }
+    function updateIconText() {
+      glowIcon.textContent = emojiText.value.trim() || "⚡";
+    }
 
-    $("randomBtn").onclick=()=>{ emojiText.value=emojiPool[Math.floor(Math.random()*emojiPool.length)]; updateIconText(); syncControls(); };
-    emojiText.oninput=updateIconText;
-    [sizeRange,rotateRange,glowRange,blurRange,saturationRange,colorPicker].forEach(el=>el.addEventListener("input",syncControls));
-    backgroundSelect.onchange=()=>setBackground(backgroundSelect.value);
-    $("copySvgBtn").onclick=copySvg; $("downloadBtn").onclick=downloadPng;
-    setBackground(backgroundSelect.value); updateIconText(); syncControls();
+    function applyPreset(key) {
+      const preset = vibes[key];
+      if (!preset) return;
+      emojiText.value = preset.emoji;
+      sizeRange.value = preset.size;
+      glowRange.value = preset.glow;
+      rotateRange.value = preset.rotation;
+      colorPicker.value = preset.color;
+      updateIconText();
+      syncControls();
+    }
+
+    function randomize() {
+      const next = emojiPool[Math.floor(Math.random() * emojiPool.length)];
+      const seedColor = palette[Math.floor(Math.random() * palette.length)];
+      const dial = 45 + Math.random() * 90;
+      const glow = 12 + Math.random() * 38;
+      emojiText.value = next;
+      colorPicker.value = seedColor;
+      sizeRange.value = 110 + Math.random() * 90;
+      rotateRange.value = Math.round((Math.random() - 0.5) * 120);
+      glowRange.value = Math.round(glow);
+      saturationRange.value = 60 + Math.random() * 45;
+      updateIconText();
+      syncControls();
+    }
+
+    function makeSvgMarkup() {
+      const text = (emojiText.value.trim() || "⚡").slice(0, 4);
+      const size = Number(sizeRange.value);
+      const glow = Number(glowRange.value);
+      const rotate = Number(rotateRange.value);
+      const color = adjustSaturation(colorPicker.value, Number(saturationRange.value));
+
+      return `
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320" role="img" aria-label="Neon glow icon">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="100%" stop-color="#111b2b"/>
+    </linearGradient>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="${clamp(glow / 12, 1, 10)}" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="320" height="320" rx="36" fill="url(#bg)"/>
+  <text x="160" y="${160 + size * 0.23}" text-anchor="middle" font-size="${size}" font-family="Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif" fill="${color}" filter="url(#softGlow)" transform="rotate(${rotate} 160 160)">${text}</text>
+</svg>`.trim();
+    }
+
+    async function copySvg() {
+      const svg = makeSvgMarkup();
+      try {
+        await navigator.clipboard.writeText(svg);
+        alert("SVG copied to clipboard.");
+      } catch (err) {
+        console.error(err);
+        prompt("Copy this SVG manually:", svg);
+      }
+    }
+
+    function downloadPng() {
+      const canvas = document.createElement("canvas");
+      const size = 1024;
+      canvas.width = size;
+      canvas.height = size;
+
+      const ctx = canvas.getContext("2d");
+      const glow = Number(glowRange.value);
+      const color = adjustSaturation(colorPicker.value, Number(saturationRange.value));
+      const text = (emojiText.value.trim() || "⚡").slice(0, 4);
+
+      const bg = ctx.createRadialGradient(512, 300, 50, 512, 512, 900);
+      bg.addColorStop(0, "rgba(255,255,255,0.1)");
+      bg.addColorStop(0.35, "rgba(14,18,33,1)");
+      bg.addColorStop(1, "rgba(6,10,18,1)");
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, size, size);
+
+      ctx.save();
+      ctx.translate(512, 512);
+      ctx.rotate((Number(rotateRange.value) * Math.PI) / 180);
+      ctx.font = `${Number(sizeRange.value) * 4}px Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      for (let i = 0; i < 18; i++) {
+        ctx.save();
+        ctx.shadowBlur = glow * (1.15 + i * 0.05);
+        ctx.shadowColor = color;
+        ctx.fillStyle = i % 2 === 0 ? color : "#ffffff";
+        ctx.fillText(text, 0, 0);
+        ctx.restore();
+      }
+
+      ctx.restore();
+
+      const a = document.createElement("a");
+      a.download = "neon-glow-icon.png";
+      a.href = canvas.toDataURL("image/png");
+      a.click();
+    }
+
+    document.getElementById("randomBtn").addEventListener("click", randomize);
+    document.getElementById("copySvgBtn").addEventListener("click", copySvg);
+    document.getElementById("downloadBtn").addEventListener("click", downloadPng);
+    emojiText.addEventListener("input", updateIconText);
+
+    [sizeRange, rotateRange, glowRange, blurRange, saturationRange].forEach((el) => {
+      el.addEventListener("input", syncControls);
+    });
+
+    colorPicker.addEventListener("input", syncControls);
+    backgroundSelect.addEventListener("change", (e) => setBackground(e.target.value));
+    document.querySelectorAll(".preset").forEach((button) => {
+      button.addEventListener("click", () => applyPreset(button.dataset.preset));
+    });
+
+    setBackground(backgroundSelect.value);
+    addSparkles();
+    updateIconText();
+    syncControls();
   </script>
 </body>
 </html>
